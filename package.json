@@ -4,5 +4,22 @@
   "packageManager": "pnpm@10.26.2",
   "engines": {
     "node": ">=24 <25"
+  },
+  "scripts": {
+    "mobile": "pnpm --dir mobile start",
+    "ios": "pnpm --dir mobile ios",
+    "android": "pnpm --dir mobile android",
+    "web": "pnpm --dir mobile web",
+    "lint": "pnpm --dir mobile lint",
+    "typecheck": "pnpm --dir mobile typecheck",
+    "test": "pnpm --dir mobile test",
+    "test:ci": "pnpm --dir mobile test:ci",
+    "bundle:check": "pnpm --dir mobile bundle:check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:ci && pnpm bundle:check"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
   }
 }
