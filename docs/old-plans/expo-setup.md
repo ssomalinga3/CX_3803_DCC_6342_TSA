@@ -221,14 +221,14 @@ Start with a test that renders an existing scaffold component and exercises an a
 
 For later feature work, use the project's acceptance paths to guide regression tests:
 
-| Future behavior | What a regression test should establish |
-| --- | --- |
-| Location permission denial | Map browsing remains available; no fabricated location |
-| Report network failure | User-entered content remains available |
-| Offline restart | A submitted pending report and photo references survive restart |
-| Interrupted upload/retry | Stable submission identity and no duplicate accepted report |
-| Guest reporting | Capture, submission, and sync do not require login |
-| Custom recipients | Drafts/retries preserve custom mode without fallback park routing |
+| Future behavior            | What a regression test should establish                           |
+| -------------------------- | ----------------------------------------------------------------- |
+| Location permission denial | Map browsing remains available; no fabricated location            |
+| Report network failure     | User-entered content remains available                            |
+| Offline restart            | A submitted pending report and photo references survive restart   |
+| Interrupted upload/retry   | Stable submission identity and no duplicate accepted report       |
+| Guest reporting            | Capture, submission, and sync do not require login                |
+| Custom recipients          | Drafts/retries preserve custom mode without fallback park routing |
 
 These are future test targets, not features to implement during environment setup. Server authorization and true duplicate prevention also require backend tests and integration checks; mobile mocks cannot prove them.
 

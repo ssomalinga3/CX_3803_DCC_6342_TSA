@@ -23,4 +23,4 @@ Jest tests starter interactions and theme selection with native mocks. Bundle ch
 
 Routes live in `src/app/`; components and hooks live outside that directory. `ios/` and `android/` are generated and ignored. Change native configuration through Expo config/plugins, then rebuild.
 
-See the [development setup guide](../docs/expo-setup.md) for testing, CI, and EAS delivery instructions.
+See the [development setup guide](../docs/old-plans/expo-setup.md) for testing, CI, and EAS delivery instructions.
