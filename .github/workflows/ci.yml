@@ -24,8 +24,17 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test:ci
-      - run: pnpm bundle:check
+      - name: format:check
+        run: pnpm format:check
+      - name: lint
+        if: ${{ !cancelled() }}
+        run: pnpm lint
+      - name: typecheck
+        if: ${{ !cancelled() }}
+        run: pnpm typecheck
+      - name: test:ci
+        if: ${{ !cancelled() }}
+        run: pnpm test:ci
+      - name: bundle:check
+        if: ${{ !cancelled() }}
+        run: pnpm bundle:check
