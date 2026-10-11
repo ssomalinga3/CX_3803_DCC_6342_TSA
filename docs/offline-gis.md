@@ -30,12 +30,13 @@ Do not imply that a first launch without downloaded data has a complete map. Pro
 
 ## Proposed queue contract
 
-The queue needs persistent submission identity, metadata, local photo references, attempt state, and the accepted server ID. Proposed states are `draft`, `pending`, `uploading`, `accepted`, and `needs_attention`; these are local delivery states, separate from administrative statuses such as Submitted or Resolved.
+The queue needs persistent submission identity, account/guest ownership context, metadata, delivery mode and explicit custom recipients, local photo references, attempt state, and the accepted server ID. Proposed states are `draft`, `pending`, `uploading`, `accepted`, and `needs_attention`; these are local delivery states, separate from administrative statuses such as Submitted or Resolved.
 
 - Move an explicitly submitted offline report to `pending` only after metadata and photo files are stored durably.
 - After a restart, recover interrupted uploads as retryable without changing their submission identity.
 - Preserve queued data on network failure. Mark acceptance only after a server acknowledgement, including an identical-retry acknowledgement after a lost response.
-- Keep invalid reports available for correction and authentication failures available for sign-in. Do not continuously retry permanent validation errors.
+- Keep invalid reports available for correction. Account submissions may need renewed authentication, but guest reporting/sync must not require account creation or sign-in (S8). Do not continuously retry permanent validation errors.
+- Preserve custom-recipient privacy across app restarts, reconnects, and delivery failures. Do not apply category-default park routing to a queued custom report; park administrators cannot access the report after sync (S8).
 - Resolve server deduplication, notification retry tracking, queue retention, and device storage limits in D-06/D-07/D-09 before implementation.
 
 ## Acceptance checks

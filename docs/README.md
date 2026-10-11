@@ -33,6 +33,7 @@ The detailed design supplies the selected technical architecture. The research s
 | S5 | Component PlantUML supplied directly with this request, preserved in [architecture.puml](diagrams/architecture.puml). |
 | S6 | [Existing mid-fidelity Figma prototype](https://www.figma.com/design/zotPKNdYIDv72Bc1mc57CQ/mid-fidelity-prototype?node-id=0-1&p=f&t=6Aj9ZpRWAzGsIdCs-0). Page/frame metadata and representative renders for layer selection, report routing/details, queued reports, custom recipients, and location-share confirmation reviewed October 11, 2026. Direct screen links are in [UI specification](design/ui-spec.md). |
 | S7 | [JIDCC-6342 Jira backlog, project J6 / board 2](https://gatech-team-f1s41wh9.atlassian.net/jira/software/projects/J6/boards/2/backlog?cloudId=f152a524-e8ec-400e-ae70-74c3fce2b4a7&visitedUserSeg=true), read October 11, 2026. The supplied duplicate URL refers to this same board. Source for engineering work items and live delivery tracking; ticket presence is not proof of implementation. |
+| S8 | Project-owner clarification in this repository task, October 11, 2026: guest reporting must be supported; reports with custom recipients must not be visible to park administrators. This resolves those previously open product questions and takes precedence over earlier unspecified access rules. |
 
 SharePoint references require team access. These Markdown files summarize the implementation-relevant information so a developer can read the specifications without opening the original assignments. The local blank research template was not used as project evidence.
 
@@ -52,6 +53,8 @@ Use the live board for status and assignees rather than maintaining a second bac
 ## Scope and traceability
 
 The primary users are visitors/community members, restoration workers/volunteers, and researchers/Conservancy administrators. These user groups are not automatically equivalent to authorization roles.
+
+Reporting is available without an account. Custom-recipient reports support personal/organization recordkeeping and are excluded from park-administrator access, including staff lists, details, photos, exports, and notifications. Send only to the reporter's specified recipients; delivery failures must not fall back to park routing (S8).
 
 | Research ID | Required behavior | Source priority / qualification | Specification |
 | --- | --- | --- | --- |

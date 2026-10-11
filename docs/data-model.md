@@ -21,7 +21,7 @@ Implementation references: [J6-12 spatial tables/indexes](https://gatech-team-f1
 ## Relationships and meaning
 
 - One role has many users; each user references one role. The source roles are **Visitor**, **Worker**, and **Administrator**.
-- A user submits observations. Each observation references a category, current status, and assigned recipient. Whether anonymous reports can omit the user is unresolved (D-01).
+- Signed-in users and guests submit observations. S8 requires a nullable user reference or equivalent guest-submitter representation; no account is required. Category/status relationships remain, but destination relationships must distinguish park routing from private custom recipients.
 - A category references its default recipient; many categories may share a recipient. The observation's assigned recipient records where that report was routed, separately from the category default.
 - An observation has attached image records; S1 describes one or more photos. The maximum count and whether a text-only report is allowed are open (D-04).
 - Each GIS feature belongs to one layer in S1. Trails, preserve boundaries, and landmarks are feature geometries in that ER diagram; Jira's separate-table design remains to be reconciled in D-12.
@@ -39,6 +39,17 @@ The existing [Figma layer screen](https://www.figma.com/design/zotPKNdYIDv72Bc1m
 - Store image bytes in private S3, not the database. S1 calls the persisted reference `image_url`, but access is through expiring presigned URLs. Persist a stable object reference and generate temporary access URLs on demand; the exact column representation is open in D-04.
 
 ## Schema details to finish before migrations
+
+### Confirmed additions required by S8
+
+The ER table above remains a transcription of S1. The implementation schema must additionally support:
+
+- Guest submission without a `user` account, while distinguishing each guest's ownership/access context. Do not treat all rows with a null `user_id` as one owner.
+- A persisted delivery/access mode distinguishing park-routed from custom-recipient reports. Proposed field: `delivery_mode` with `park` and `custom` values. Custom mode denies park-administrator access to the report and all image records.
+- One or more explicit custom destinations, separate from the category's default recipient. A custom report must not acquire a park recipient through a default or fallback; `assigned_recipient_id` cannot remain an unconditional required park-staff reference.
+- Ownership and duplicate-submission identity for both guest and account-based reports, including offline retries. An observation ID or recipient email alone is not an access credential.
+
+These are confirmed behavior/schema requirements, while column names, recipient relations, and guest access credentials remain implementation choices under D-01/D-03/D-07.
 
 The diagram does not define all nullability, lengths, deletion rules, timestamp timezone semantics, or indexes. Proposed constraints are foreign-key integrity, controlled pillar/status values, valid spatial geometries, and spatial indexes for viewport queries. Record the final constraints in migrations and shared contracts.
 
