@@ -39,3 +39,5 @@ S3 story 7 includes a staff table/map view for report filtering and management, 
 S3 p. 4 requires documented local startup, reproducible database setup/migrations, backend Jest tests, mobile verification, lint/type checks, PR build checks, and an iOS build. These are implementation deliverables, not commands available in this documentation-only repository. Hosting, runtime versions, build/distribution details, and deployment ownership remain open in D-10.
 
 Track implementation in the existing [J6 Jira backlog](https://gatech-team-f1s41wh9.atlassian.net/jira/software/projects/J6/boards/2/backlog); see the [ticket-to-specification map](README.md#jira-implementation-references). Use the existing [Figma prototype](https://www.figma.com/design/zotPKNdYIDv72Bc1mc57CQ/mid-fidelity-prototype?node-id=0-1) for mobile screen design. Jira's spatial-table task differs from the PDF model and is recorded as D-12; neither source should be silently overwritten.
+
+For how the pnpm workspace scripts are structured and how a new package joins them, see [workspace commands](workspace.md).
