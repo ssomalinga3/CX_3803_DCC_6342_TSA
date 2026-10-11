@@ -1,0 +1,49 @@
+@startuml
+top to bottom direction
+!pragma layout smetana
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam ArrowColor #334155
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam ranksep 16
+skinparam nodesep 18
+skinparam componentBackgroundColor #EFF6FF
+skinparam componentBorderColor #475569
+skinparam databaseBackgroundColor #F0FDF4
+skinparam databaseBorderColor #475569
+package "Cascade Springs Smart GIS" {
+package "Mobile Application — React Native / Expo" {
+  component "Application UI & Logic\nMapping, navigation, education and reporting" as App
+  component "Primary Map Renderer\nMapLibre React Native" as NativeMap
+  component "3D Terrain View\nWebView + MapLibre GL JS" as Terrain
+  component "Offline GIS Cache\nLocal maps and layers" as Cache
+  component "API Client" as Client
+  App --> NativeMap
+  App --> Client
+  App --> Terrain
+  App --> Cache
+}
+package "Server Application\nNode.js / TypeScript" {
+  component "REST API" as API
+  component "GIS Module\nLayer and trail access" as GIS
+  component "Reporting Module\nReport and image handling" as Reports
+  component "Data Access\nDrizzle ORM / spatial SQL" as Data
+  component "Email Adapter\nSMTP integration" as Email
+  API --> GIS
+  API --> Reports
+  GIS --> Data
+  Reports --> Data
+  Reports --> Email
+}
+database "PostgreSQL + PostGIS\nGIS data and reports" as DB
+component "Report Image Storage\nObject storage" as Images <<storage>>
+' Every visible solid arrow points from a dependent to its dependency.
+Client -down-> API : REST / HTTPS\nJSON + multipart
+Data --> DB
+Reports --> Images
+}
+component "Amazon SES" as SES <<external service>>
+Email --> SES : SMTP
+@enduml
