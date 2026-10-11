@@ -1,0 +1,31 @@
+# Dependencies and package-manager cache
+node_modules/
+.pnpm-store/
+
+# Expo and build/test output
+.expo/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Generated mobile native projects (Expo Continuous Native Generation)
+/mobile/ios/
+/mobile/android/
+
+# Local environment configuration; retain documented examples
+.env
+.env.*
+!.env.example
+
+# Signing and service credentials
+credentials.json
+*.pem
+*.p12
+*.p8
+*.mobileprovision
+*.keystore
+*.jks
+
+# Local logs and macOS metadata
+*.log
+.DS_Store

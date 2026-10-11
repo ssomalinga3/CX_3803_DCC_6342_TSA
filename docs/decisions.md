@@ -19,6 +19,7 @@ The sources settle the main stack and feature direction, but do not settle the c
 
 ## Resolved direction and documentation cautions
 
+- **October 11, 2026 — D-10 tooling only:** During the authorized development-environment setup, the project owner installed Node 24 through nvm. The repository pins the verified Node 24.21.0 and existing pnpm 10.26.2; see the [Expo setup guide](expo-setup.md#3-establish-reproducible-tools). Expo SDK compatibility will be checked during scaffolding. Hosting, native device tooling, distribution, and deployment ownership remain open.
 - **October 11, 2026 — S8:** Support guest reporting, including custom-recipient and offline submissions. No account or sign-in is required for these flows. Guest ownership/access implementation remains an engineering detail, not an open question about whether guests are allowed.
 - **October 11, 2026 — S8:** Custom-recipient reports are private from park administrators. Deliver only to specified recipients and exclude the report and attachments from staff access and notifications. Neither category defaults, staff roles, nor delivery failures may override this choice. Applies to [security](security.md), [data](data-model.md), [API](api.md), [offline behavior](offline-gis.md), and [UI flows](design/user-flows.md).
 - S2 proposed React Native or Flutter; S1 selects **React Native with Expo**. S3 says PostgreSQL with a possible ORM; S1 selects **PostGIS and Drizzle**. Use the detailed design's selected stack.
