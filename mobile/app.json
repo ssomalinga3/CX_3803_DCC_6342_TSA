@@ -2,15 +2,18 @@
   "expo": {
     "name": "Cascade Springs Smart GIS",
     "slug": "cascade-springs",
+    "owner": "cx3803jidcc6342tsa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cascade-springs",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.cx3803team6342.cascadesprings"
     },
     "android": {
+      "package": "com.cx3803team6342.cascadesprings",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,6 +41,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bca3cac0-3a82-45b8-9df3-3ad9186796ef"
+      }
     }
   }
 }
