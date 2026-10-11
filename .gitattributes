@@ -1,0 +1,15 @@
+# Normalize line endings to LF for all text files so Prettier's default
+# endOfLine:"lf" and CI format:check behave consistently across platforms
+# (notably Windows clones where autocrlf would otherwise introduce CRLF).
+* text=auto eol=lf
+
+# Explicitly treat common binary assets as binary.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.p12 binary
+*.p8 binary
+*.keystore binary
+*.jks binary

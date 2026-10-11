@@ -15,6 +15,8 @@ Cascade Springs Nature Conservancy Smart GIS: Mapping Atlanta's Ecological Core.
 | [User flows](design/user-flows.md) | Main tasks, failure states, and observable acceptance conditions |
 | [Open decisions](decisions.md) | Unresolved product and engineering choices that must not be silently assumed |
 | [Architecture diagram source](diagrams/architecture.puml) | Editable PlantUML supplied with the assignment request |
+| [Backend package](../backend/README.md) | How to run, build, test, and verify the Node/TypeScript server |
+| [First task + agent plan](tasks/first-task-gis-layers.md) | First implementation task (scope/acceptance) and the [proposed plan](tasks/first-task-implementation-plan.md) |
 
 ## How to interpret these specifications
 
