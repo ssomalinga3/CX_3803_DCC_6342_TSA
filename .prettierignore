@@ -5,6 +5,7 @@ dist/
 coverage/
 mobile/ios/
 mobile/android/
+mobile/expo-env.d.ts
 pnpm-lock.yaml
 # Existing specifications retain their established formatting.
 AGENTS.md
