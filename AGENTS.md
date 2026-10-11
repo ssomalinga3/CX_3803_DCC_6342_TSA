@@ -8,6 +8,9 @@ Read the relevant specifications before editing: [architecture](docs/architectur
 
 ## Development & Architectural Constraints
 
+- Use pnpm with the versions pinned in `.nvmrc` and root `package.json`. Install from the workspace root and maintain one root `pnpm-lock.yaml`; do not introduce npm or Yarn lockfiles.
+- Add Expo/React Native dependencies through `pnpm --dir mobile exec expo install`. Use development builds for MapLibre; rebuild after native dependency or configuration changes. Keep durable configuration in Expo config/plugins rather than editing generated native projects.
+
 Follow the selected stack and module boundaries in `docs/architecture.md`. Keep spatial SQL in data access, notification transport in its adapter, and device behavior in the mobile application. Validate network input at runtime and enforce authorization on the server.
 
 Keep credentials out of source control and mobile bundles, and exclude GPS coordinates from logs. Apply the guest-reporting and custom-recipient privacy requirements in `docs/security.md` across persistence, APIs, notifications, and offline retries.
@@ -22,6 +25,8 @@ Keep credentials out of source control and mobile bundles, and exclude GPS coord
 ## Testing & Verification
 
 Discover commands from package manifests, repository scripts, and setup documentation; do not guess script names. Run applicable lint, type checks, tests, and builds. Add meaningful regression tests for changed behavior, using backend Jest tests where applicable.
+
+Treat JavaScript bundle checks, native compilation, and device smoke tests as separate evidence; passing one does not establish the others.
 
 Verify affected acceptance paths from `docs/design/user-flows.md`, including permission denial, offline restart/retry, duplicate prevention, and access restrictions. Check mobile changes on iOS and supported Android targets as appropriate.
 
