@@ -4,4 +4,6 @@ CX 3803 Capstone repository for Team 6342: **Cascade Springs Smart GIS**, a mobi
 
 Start with the [project specifications](docs/README.md) for the architecture, data model, interfaces, security requirements, offline behavior, and user experience.
 
+To run the React Native starter in a local iOS Simulator using an EAS cloud build, follow the [mobile setup guide](mobile/README.md).
+
 Use the existing [Figma prototype](https://www.figma.com/design/zotPKNdYIDv72Bc1mc57CQ/mid-fidelity-prototype?node-id=0-1) for UI design and the [Jira backlog](https://gatech-team-f1s41wh9.atlassian.net/jira/software/projects/J6/boards/2/backlog) for implementation tracking.
