@@ -1,6 +1,6 @@
 # Cascade Springs mobile
 
-Expo SDK 57 / React Native 0.86 / TypeScript starter application. Product screens are not implemented yet; follow the team's Figma prototype and [project specifications](../docs/README.md) when feature work begins.
+Expo SDK 57 / React Native 0.86 / TypeScript starter application. The Map tab renders an initial native basemap preview; follow the team's Figma prototype and [project specifications](../docs/README.md) when feature work begins.
 
 ## First-time iOS Simulator setup
 
@@ -95,3 +95,55 @@ This runs formatting, lint, type checks, Jest, and iOS/Android JavaScript bundle
 Routes live in `src/app/`; components and hooks live outside that directory. `ios/` and `android/` are generated and ignored. Change native configuration through Expo config/plugins, then rebuild.
 
 See [Expo's simulator build workflow](https://docs.expo.dev/build-reference/simulators/) and the historical [development setup guide](../docs/old-plans/expo-setup.md). Use this README for the current local iOS workflow.
+
+## Native map preview (J6-14, first slice)
+
+The Map tab uses the already-installed MapLibre React Native 11.5 renderer with
+[OpenFreeMap Liberty](https://openfreemap.org/quick_start/) online tiles. No token,
+backend, new native dependency, or new development build is required for this
+slice. It follows the floating header and map controls from
+[Figma active navigation](https://www.figma.com/design/zotPKNdYIDv72Bc1mc57CQ/mid-fidelity-prototype?node-id=17-26),
+with a truthful preview panel in place of the unimplemented reporting dock.
+Native map attribution remains available through the map information button.
+The public basemap's trails/boundaries are not approved Conservancy GIS layers.
+The initial viewport is only a browsing center, not a measured preserve boundary.
+
+Start Metro with `pnpm mobile --port 8082` in this worktree. If needed, connect the
+installed simulator client explicitly (with `DEVELOPER_DIR` set as above):
+
+```sh
+xcrun simctl openurl booted 'cascade-springs://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8082'
+```
+
+Verify that tiles and labels load, pan/pinch, use zoom in/out, and use Return to
+preserve. Explore remains the starter screen. No location permission is requested;
+browsing works with location off. If initial loading fails or remains incomplete
+for 20 seconds, check the visible connection message and Retry. This is an online
+preview, with no offline coverage guarantee. The web route explains the native
+build requirement instead of importing native MapLibre.
+
+Remaining dependencies for the complete
+[J6-14](https://gatech-team-f1s41wh9.atlassian.net/browse/J6-14) flow:
+
+- Approved GIS data, provenance/license, layer properties, and a finalized public
+  API contract (D-05); do not substitute fabricated trails or infer off-trail safety
+  from this basemap.
+- Foreground GPS consent, denied/unavailable/stale-fix states, and blue-dot/recenter
+  behavior (J6-15). Native permission configuration will require an EAS rebuild
+  with `pnpm ios:build`, then `pnpm ios:install`.
+- Production basemap/provider approval and offline region/zoom/storage policy
+  (D-05/D-06). OpenFreeMap here is a development preview choice.
+- Approved trail tolerance before off-trail warnings (J6-24), and later layer,
+  reporting, and emergency flows. These controls are not represented as working
+  actions in this slice.
+
+On November 1, 2026, native tile/label rendering, Zoom in, and Return to preserve
+were verified on the existing iPhone 16 / iOS 18.6 development build through Metro
+on 8082. See the [map capture](../docs/images/ios-simulator-map-preview.png).
+The native map differs from Figma's gray placeholder by rendering live basemap
+data; no Figma placeholder map/blue-dot artwork is shipped as GIS content.
+Tab-bar tapping remains manual: the automation tool returned `noWindowsAvailable`
+for coordinate clicks. Pan/pinch, offline/device failure recovery, Android device
+behavior, and dynamic text-size checks remain unverified. Jest separately covers
+native-render readiness, viewport controls, failure/retry, and load timeout.
+This slice does not close J6-14.
