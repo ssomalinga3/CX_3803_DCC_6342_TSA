@@ -1,9 +1,17 @@
-import { Camera, Map, type CameraRef, type MapRef } from '@maplibre/maplibre-react-native';
+import {
+  Camera,
+  GeoJSONSource,
+  Layer,
+  Map,
+  type CameraRef,
+  type MapRef,
+} from '@maplibre/maplibre-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabInset } from '@/constants/theme';
+import { usePublicGis } from '@/hooks/use-public-gis';
 
 // Initial browsing viewport only; not a survey point, GPS fix, or preserve boundary.
 const PRESERVE_CENTER: [number, number] = [-84.4792, 33.7176];
@@ -18,6 +26,8 @@ export default function PreserveMap() {
   const dockBottom = insets.bottom + BottomTabInset + 8;
   const camera = useRef<CameraRef>(null);
   const map = useRef<MapRef>(null);
+  const gis = usePublicGis(process.env.EXPO_PUBLIC_API_URL);
+  const [dockHeight, setDockHeight] = useState(160);
   const [attempt, setAttempt] = useState(0);
   const [loadState, setLoadState] = useState<LoadState>('loading');
 
@@ -31,6 +41,30 @@ export default function PreserveMap() {
   }, [attempt]);
 
   const ready = loadState === 'ready';
+  const snapshot = gis.snapshot;
+  const bounds = snapshot?.bounds;
+  useEffect(() => {
+    if (ready && bounds) {
+      const [west, south, east, north] = bounds;
+      if (west === east || south === north) {
+        camera.current?.easeTo({
+          center: [(west + east) / 2, (south + north) / 2],
+          zoom: INITIAL_ZOOM,
+          duration: 300,
+        });
+      } else {
+        camera.current?.fitBounds(bounds, {
+          padding: {
+            top: insets.top + 110,
+            bottom: dockBottom + dockHeight + 20,
+            left: 24,
+            right: 84,
+          },
+          duration: 300,
+        });
+      }
+    }
+  }, [ready, bounds, dockBottom, dockHeight, insets.top]);
   async function zoomBy(delta: number) {
     try {
       const zoom = await map.current?.getZoom();
@@ -53,7 +87,7 @@ export default function PreserveMap() {
         style={styles.map}
         mapStyle={MAP_STYLE}
         attribution
-        attributionPosition={{ bottom: dockBottom + 156, left: 12 }}
+        attributionPosition={{ bottom: dockBottom + dockHeight + 8, left: 12 }}
         compassPosition={{ top: insets.top + 108, right: 24 }}
         onDidFinishRenderingMapFully={() => setLoadState('ready')}
         onDidFailLoadingMap={() => setLoadState('unavailable')}
@@ -64,6 +98,51 @@ export default function PreserveMap() {
           minZoom={MIN_ZOOM}
           maxZoom={MAX_ZOOM}
         />
+        {snapshot && snapshot.collection.features.length > 0 && (
+          <GeoJSONSource id="public-gis" data={snapshot.collection}>
+            <Layer
+              id="gis-boundary-fill"
+              type="fill"
+              filter={['==', ['geometry-type'], 'Polygon']}
+              paint={{ 'fill-color': '#8754c8', 'fill-opacity': 0.12 }}
+            />
+            <Layer
+              id="gis-boundary-outline"
+              type="line"
+              afterId="gis-boundary-fill"
+              filter={['==', ['geometry-type'], 'Polygon']}
+              paint={{ 'line-color': '#7442b5', 'line-width': 3, 'line-dasharray': [3, 2] }}
+            />
+            <Layer
+              id="gis-trail-casing"
+              type="line"
+              afterId="gis-boundary-outline"
+              filter={['==', ['geometry-type'], 'LineString']}
+              layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+              paint={{ 'line-color': '#fff', 'line-width': 7 }}
+            />
+            <Layer
+              id="gis-trails"
+              type="line"
+              afterId="gis-trail-casing"
+              filter={['==', ['geometry-type'], 'LineString']}
+              layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+              paint={{ 'line-color': '#c95700', 'line-width': 4 }}
+            />
+            <Layer
+              id="gis-landmarks"
+              type="circle"
+              afterId="gis-trails"
+              filter={['==', ['geometry-type'], 'Point']}
+              paint={{
+                'circle-color': '#007aff',
+                'circle-radius': 7,
+                'circle-stroke-color': '#fff',
+                'circle-stroke-width': 2,
+              }}
+            />
+          </GeoJSONSource>
+        )}
       </Map>
 
       <View pointerEvents="box-none" style={[styles.overlay, { top: insets.top + 12 }]}>
@@ -73,7 +152,7 @@ export default function PreserveMap() {
         </View>
       </View>
 
-      <View style={[styles.controls, { bottom: dockBottom + 188 }]}>
+      <View style={[styles.controls, { bottom: dockBottom + dockHeight + 20 }]}>
         <MapButton
           label="Return to preserve"
           disabled={!ready}
@@ -97,7 +176,10 @@ export default function PreserveMap() {
         </MapButton>
       </View>
 
-      <View style={[styles.dock, { bottom: dockBottom }]}>
+      <View
+        style={[styles.dock, { bottom: dockBottom }]}
+        onLayout={(event) => setDockHeight(event.nativeEvent.layout.height)}
+      >
         {loadState === 'loading' && (
           <View style={styles.status}>
             <ActivityIndicator accessibilityLabel="Loading map" />
@@ -121,9 +203,42 @@ export default function PreserveMap() {
           </View>
         )}
         {ready && <Text style={styles.subtitle}>Pan or pinch to explore</Text>}
+        <View accessibilityLiveRegion="polite" style={styles.gisStatus}>
+          {gis.status === 'unconfigured' && (
+            <Text style={styles.note}>GIS API not configured. Basemap only.</Text>
+          )}
+          {gis.status === 'loading' && <Text style={styles.note}>Loading GIS layers…</Text>}
+          {gis.status === 'error' && (
+            <View style={styles.status}>
+              <Text style={styles.note}>GIS layers unavailable. Basemap browsing still works.</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Retry GIS layers"
+                onPress={gis.retry}
+                style={styles.retry}
+              >
+                <Text style={styles.retryText}>Retry layers</Text>
+              </Pressable>
+            </View>
+          )}
+          {gis.status === 'empty' && (
+            <Text style={styles.note}>No public GIS features available.</Text>
+          )}
+          {snapshot && (
+            <>
+              <Text style={styles.gisTitle}>
+                {snapshot.isDemo ? 'Demo GIS' : 'Public GIS'} · {snapshot.layers.length} layers ·{' '}
+                {snapshot.collection.features.length} features
+              </Text>
+              <Text style={styles.note}>Orange trails · Purple boundary · Blue landmarks</Text>
+              {snapshot.isDemo && (
+                <Text style={styles.warning}>Synthetic shapes — not for navigation.</Text>
+              )}
+            </>
+          )}
+        </View>
         <Text style={styles.note}>
-          Online basemap preview. Approved trail and boundary layers, GPS navigation, and offline
-          downloads are not available yet.
+          Online preview. GPS and offline downloads are not available yet.
         </Text>
       </View>
     </View>
@@ -194,6 +309,9 @@ const styles = StyleSheet.create({
   },
   status: { flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' },
   note: { fontSize: 13, lineHeight: 19, color: '#60646c' },
+  gisStatus: { gap: 4 },
+  gisTitle: { fontSize: 15, fontWeight: '600', color: '#1c1c1e' },
+  warning: { fontSize: 13, lineHeight: 19, fontWeight: '600', color: '#934400' },
   retry: {
     minHeight: 44,
     paddingHorizontal: 16,

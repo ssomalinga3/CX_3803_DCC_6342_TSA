@@ -51,3 +51,15 @@ GPS, approved GIS overlays, layers/report/emergency actions, and offline coverag
 remain unimplemented. See [mobile map setup and dependencies](../../mobile/README.md#native-map-preview-j6-14-first-slice).
 OpenFreeMap Liberty is used for development only; D-05/D-06 remain open for
 production data/provider approval and offline policy.
+
+## API integration progress — November 1, 2026
+
+The combined integration branch connects the existing map layout to the public
+GIS catalog and GeoJSON collections. It renders polygon fill/outline, trails
+above polygons, and landmark points, fitting the returned extent. The information
+panel distinguishes unconfigured/loading/empty/unavailable states and includes
+Retry layers plus explicit synthetic-data labeling. The source layer-selection,
+GPS, report, safety, and offline flows remain future work. The
+[integration guide](../development/integration-branch.md) records setup,
+verification and limitations; this is an online development slice using synthetic
+fixtures, not approved navigation or a completed J6-14/J6-19 flow.

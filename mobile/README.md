@@ -147,3 +147,13 @@ for coordinate clicks. Pan/pinch, offline/device failure recovery, Android devic
 behavior, and dynamic text-size checks remain unverified. Jest separately covers
 native-render readiness, viewport controls, failure/retry, and load timeout.
 This slice does not close J6-14.
+
+## API-backed GIS integration
+
+The combined branch connects the Map tab to the public catalog/GeoJSON API from
+PR #5. Follow the [integration guide](../docs/development/integration-branch.md)
+for a single-branch checkout, isolated backend setup, `EXPO_PUBLIC_API_URL`,
+Metro/device addressing, verification, and later PR merge instructions. Earlier
+basemap-preview sections record the PR #4 baseline; this branch additionally
+renders server-provided geometry and its demo warning. No new native dependency
+or app configuration is introduced.

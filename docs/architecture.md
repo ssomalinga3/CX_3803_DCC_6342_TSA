@@ -57,3 +57,15 @@ S3 p. 4 requires documented local startup, reproducible database setup/migration
 Track implementation in the existing [J6 Jira backlog](https://gatech-team-f1s41wh9.atlassian.net/jira/software/projects/J6/boards/2/backlog); see the [ticket-to-specification map](README.md#jira-implementation-references). Use the existing [Figma prototype](https://www.figma.com/design/zotPKNdYIDv72Bc1mc57CQ/mid-fidelity-prototype?node-id=0-1) for mobile screen design. D-12 records the project-owner decision to use generic GIS tables rather than the separate tables originally named by Jira.
 
 For how the pnpm workspace scripts are structured and how a new package joins them, see [workspace commands](workspace.md).
+
+## Mobile public GIS connection
+
+The mobile client reuses the backend GIS contracts through type-only imports;
+no database or Worker runtime modules enter the mobile bundle. It validates
+catalog metadata, same-origin feature paths, and GeoJSON at runtime before
+passing a complete snapshot to native MapLibre. Requests are abortable and have
+a bounded loading time; failed/empty API reads remain distinct from basemap
+failure. The first integration reads full public collections in memory only.
+See the [integration guide](development/integration-branch.md) for the combined
+branch workflow, transport configuration, rendering verification, and deferred
+large-dataset/offline work.
