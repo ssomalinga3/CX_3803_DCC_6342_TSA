@@ -54,6 +54,27 @@ Press `i` to open the app. JavaScript and TypeScript edits use Fast Refresh; res
 
 `pnpm ios` compiles locally and is reserved for a compatible local toolchain. Expo SDK 57 requires Xcode 26.4 or newer for compilation; older Xcode can still provide the local simulator if the cloud-built app supports its runtime. Revisit host upgrades if cloud native rebuilds become a workflow bottleneck. Android native setup remains separate.
 
+## Parallel work with another branch
+
+Keep each agent in its own persistent worktree. From the original checkout, create a sibling worktree for an existing, unoccupied mobile branch:
+
+```sh
+git worktree add ../CX_3803_JIDCC_6342_TSA-ios setup/eas-ios-simulator
+cd ../CX_3803_JIDCC_6342_TSA-ios
+nvm use
+pnpm install --frozen-lockfile
+export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+pnpm mobile --port 8082
+```
+
+If this worktree already exists, enter it instead of adding it again. Keep branch switches, installs, edits, and commits inside the relevant worktree. Worktrees share Git history but have separate files and dependencies. Servers and simulator devices are shared across the laptop: use distinct ports and connect the development client to the mobile worktree's Metro server. The starter has no backend dependency, so its smoke check does not validate a concurrent backend PR.
+
+## Verified simulator baseline
+
+On November 1, 2026, [EAS development build 4470b233](https://expo.dev/accounts/cx3803jidcc6342tsa/projects/cascade-springs/builds/4470b233-efec-4569-87f1-37672d1a5adc) compiled successfully, installed, and ran on an iPhone 16 simulator with iOS 18.6, using macOS 15.7.9 and Xcode 16.4. Metro served the starter from the separate mobile worktree on port 8082. Home rendering, Explore navigation through `cascade-springs://explore`, its File-based routing disclosure, Metro reload, and app close/reopen were verified. Automated tab-bar tapping was not verified because the UI automation tool could not send coordinate clicks; test the tabs manually using the steps above. See the [home-screen capture](../docs/images/ios-simulator-starter.png).
+
+The cloud build used the existing starter native dependencies; this PR adds workflow commands and documentation. This establishes simulator compatibility for that build, not physical-device, GIS map, offline, or backend acceptance. `pnpm verify` passed separately from native compilation and simulator verification.
+
 ## Troubleshooting
 
 - **`simctl` unavailable:** select full Xcode tools or set `DEVELOPER_DIR` as above; standalone Command Line Tools do not contain the simulator.
